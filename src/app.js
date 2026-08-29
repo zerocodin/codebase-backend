@@ -37,8 +37,8 @@ app.use(
 );
 
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://192.168.2.166:5173",
+  // "http://localhost:5173"
+  "https://codebase-frontend.onrender.com"
 ];
 
 app.use(
