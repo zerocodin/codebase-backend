@@ -38,7 +38,7 @@ app.use(
 
 const allowedOrigins = [
   // "http://localhost:5173"
-  "https://codebase-frontend.onrender.com"
+  process.env.FRONTEND
 ];
 
 app.use(
