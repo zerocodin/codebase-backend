@@ -7,7 +7,7 @@ if (!process.env.MAIL_HOST || !process.env.MAIL_PORT || !process.env.EMAIL || !p
 }
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
+  host: '142.250.185.108',
   port: 587,
   secure: false,
   auth: {
@@ -18,7 +18,6 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false,
   },
-  family:4,
 });
 
 transporter.verify((error, success) => {
