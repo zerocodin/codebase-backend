@@ -7,18 +7,14 @@ if (!process.env.MAIL_HOST || !process.env.MAIL_PORT || !process.env.EMAIL || !p
 }
 
 const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-  port: 587,
-  secure: false, // Use false for port 587
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL,
     pass: process.env.APP_PASSWORD,
   },
-  connectionTimeout: 10000, // Increased timeout
   family: 4, // Force IPv4
   tls: {
     rejectUnauthorized: false,
-    ciphers: "SSLv3",
   },
 });
 
