@@ -7,7 +7,7 @@ if (!process.env.MAIL_HOST || !process.env.MAIL_PORT || !process.env.EMAIL || !p
 }
 
 const transporter = nodemailer.createTransport({
-  service: process.env.MAIL_HOST,
+  host: process.env.MAIL_HOST,
   port: parseInt(process.env.MAIL_PORT) || 465,
   secure: true,
   auth: {
