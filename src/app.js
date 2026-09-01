@@ -39,7 +39,9 @@ app.use(
 const allowedOrigins = [
   // "http://localhost:5173"
   process.env.FRONTEND,
-  // process.env.FRONTEND_vercel
+  "https://codebase-frontend-live.vercel.app/",
+  "https://codebase-frontend-live-git-main-zero-a611.vercel.app/",
+  "https://codebase-frontend-live-mp4c1li0w-zero-a611.vercel.app/"
 ];
 
 app.use(
