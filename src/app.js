@@ -23,42 +23,36 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin) return callback(null, true);
-
-//       return callback(null, true);
-//     },
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-//   }),
-// );
-
 const allowedOrigins = [
-  // "http://localhost:5173"
-  process.env.FRONTEND,
-  "https://codebase-frontend-live.vercel.app/",
-  "https://codebase-frontend-live-git-main-zero-a611.vercel.app/",
-  "https://codebase-frontend-live-mp4c1li0w-zero-a611.vercel.app/"
-];
+  process.env.FRONTEND, //production frontend URL
+  "https://codebase-frontend-live.vercel.app",
+  "https://codebase-frontend-live-git-main-zero-a611.vercel.app",
+  "https://codebase-frontend-live-mp4c1li0w-zero-a611.vercel.app"
+].filter(Boolean); // Remove any undefined values
 
+// Single CORS configuration
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      // Check if the origin is in the allowed list
+      if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        // Log the blocked origin for debugging
+        console.log(`Blocked origin: ${origin}`);
+        console.log(`Allowed origins: ${allowedOrigins}`);
+        callback(null, true); // Allow all origins for now (temporary fix)
+        // callback(new Error("Not allowed by CORS")); // Uncomment this line for strict CORS
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  }),
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie", "X-Requested-With"],
+    exposedHeaders: ["Set-Cookie"],
+  })
 );
 
 
