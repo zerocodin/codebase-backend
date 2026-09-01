@@ -38,7 +38,8 @@ app.use(
 
 const allowedOrigins = [
   // "http://localhost:5173"
-  process.env.FRONTEND
+  process.env.FRONTEND,
+  process.env.FRONTEND_vercel
 ];
 
 app.use(
