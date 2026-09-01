@@ -14,15 +14,17 @@ console.log("[mail] env check passed:", {
   APP_PASSWORD: `set (${process.env.APP_PASSWORD.trim().length} chars, ${process.env.APP_PASSWORD.trim().split(" ").length} space-separated groups)`,
 });
 
+const mailPort = parseInt(process.env.MAIL_PORT, 10) || 465;
+
 const transporter = nodemailer.createTransport({
-  service: process.env.MAIL_HOST,
-  port: parseInt(process.env.MAIL_PORT) || 465,
-  secure: false,
+  host: process.env.MAIL_HOST, // must be a hostname (e.g. smtp.gmail.com), NOT a service name
+  port: mailPort,
+  secure: mailPort === 465, // 465 → implicit TLS; 587 → STARTTLS
   auth: {
     user: process.env.EMAIL,
     pass: process.env.APP_PASSWORD,
   },
-  connectionTimeout: 5000,
+  connectionTimeout: 10000,
   tls: {
     rejectUnauthorized: false,
   },
