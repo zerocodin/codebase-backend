@@ -25,27 +25,19 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   process.env.FRONTEND, //production frontend URL
-  "https://codebase-frontend-live.vercel.app",
-  "https://codebase-frontend-live-git-main-zero-a611.vercel.app",
-  "https://codebase-frontend-live-mp4c1li0w-zero-a611.vercel.app"
-].filter(Boolean); // Remove any undefined values
+  process.env.FRONTEND_vercel,
+].filter(Boolean);
 
-// Single CORS configuration
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
       // Check if the origin is in the allowed list
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        // Log the blocked origin for debugging
-        console.log(`Blocked origin: ${origin}`);
-        console.log(`Allowed origins: ${allowedOrigins}`);
-        callback(null, true); // Allow all origins for now (temporary fix)
-        // callback(new Error("Not allowed by CORS")); // Uncomment this line for strict CORS
+        callback(null, true);
       }
     },
     credentials: true,
