@@ -1,31 +1,51 @@
 const nodemailer = require("nodemailer");
 
 // Validate environment variables
-if (!process.env.MAIL_HOST || !process.env.MAIL_PORT || !process.env.EMAIL || !process.env.APP_PASSWORD) {
-  console.error("Missing email configuration in environment variables");
+const requiredMailEnv = ["MAIL_HOST", "MAIL_PORT", "EMAIL", "APP_PASSWORD"];
+const missingEnv = requiredMailEnv.filter((key) => !process.env[key]);
+if (missingEnv.length > 0) {
+  console.error("[mail] Missing email configuration in environment variables:", missingEnv.join(", "));
   process.exit(1);
 }
+console.log("[mail] env check passed:", {
+  MAIL_HOST: process.env.MAIL_HOST,
+  MAIL_PORT: process.env.MAIL_PORT,
+  EMAIL: process.env.EMAIL,
+  APP_PASSWORD: `set (${process.env.APP_PASSWORD.trim().length} chars, ${process.env.APP_PASSWORD.trim().split(" ").length} space-separated groups)`,
+});
 
 const transporter = nodemailer.createTransport({
-   host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.APP_PASSWORD,
-      },
-      family: 4,
-      tls: {
-        rejectUnauthorized: false,
-      },
-      connectionTimeout: 10000,
+  service: process.env.MAIL_HOST,
+  port: parseInt(process.env.MAIL_PORT) || 465,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.APP_PASSWORD,
+  },
+  connectionTimeout: 5000,
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+console.log("[mail] transporter resolved config:", {
+  host: transporter.options.host,
+  port: transporter.options.port,
+  secure: transporter.options.secure,
 });
 
 transporter.verify((error, success) => {
   if (error) {
-    console.error("SMTP connection error : ", error);
+    console.error("[mail] SMTP connection error:", {
+      message: error.message,
+      code: error.code,           // ETIMEDOUT/ECONNREFUSED => port blocked or unreachable; EAUTH => credentials
+      command: error.command,
+      response: error.response,
+      host: transporter.options.host,
+      port: transporter.options.port,
+    });
   } else {
-    console.log("SMTP server is ready to send emails");
+    console.log("[mail] SMTP server is ready to send emails");
   }
 });
 
@@ -51,7 +71,14 @@ const sendMAIL = async ({ to, otp}) => {
     
     return info
   } catch (error) {
-    console.error("Error sending email:", error.message);
+    console.error("[mail] Error sending email:", {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      responseCode: error.responseCode,
+      recipient: to,
+    });
     throw error;
   }
 };
